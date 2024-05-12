@@ -40,141 +40,108 @@ npm run build
 ```
 yarn build
 ```
+ 
 
 ## Архитектура
 #### Типы данных
--	Категории товара
-```
-type CategoryType = string
-```
--	Тип, описывающий ошибки валидации форм
-```
-type FormErrors
-```
-- Интерфейс товара
-```
-interface IProduct {
-id: string;
-description: string;
-image: string;
-title: string;
-category: CategoryType;
-price: number | null;
- selected: boolean; // добавлен ли текущий товар уже в корзину
-}
-```
+Типы данных находятся в src/types/index.ts
 
--	Интерфейс, описывающий внутреннее состояние приложения
-    Используется для хранения карточек, корзины, заказа пользователя, ошибок в формах. Имеет следующие методы для работы с карточками и корзиной:
-```
-interface IAppState {
-basket: Product[];
-products: Product[];
-order: IOrder;
-formErrors: FormErrors;
-addProductToBasket(product: Product): void;
-deleteProductFromBasket(id: string): void;
-clearBasket(): void;
-getBasketCount(): number;
-getTotalPrice(): number;
-setOrderField(field: string, value: string): void;
-validateContacts(): boolean;
-validateOrder(): boolean;
-clearBasket(): boolean;
-setProduct(items: IProduct[]): void;
-resetSelected(): void;
-}
-```
--	Интерфейс заказа товара
-```
-interface IOrder {
-productsID: string[];
-payment: string;  
-total: number;
-address: string;
-email: string;
-phone: string;
-}
-```
--	Интерфейс карточки товара
-```
-interface ICard {
-  id: string;
-  title: string;
-  category: string;
-  description: string;
-  image: string;
-  price: number | null;
-  selected: boolean;
-}
-```
--	Интерфейс страницы
-```
-interface IPage {
- counterProductInBasket: number;
- products: HTMLElement[];
-}
-```
--	Интерфейс корзины товаров
-```
-interface IBasket {
-products: HTMLElement[];
-price: number;
-}
-```
--	Интерфейс модального окна заказа товара
-```
-interface IOrderModal {
- address: string;  
-payment: string;
-}
-```
-- Интерфейс модального окна контактов
-```
-interface IContacts {
- phone: string;
- email: string;
-}
-```
-- Интерфейс работы модального окна
-```
-interface IModal {
-	header?: ViewElement;
-	content: ViewElement;
-	actions: ViewElement[];
-}
-```
 #### Базовый код
 Класс EventEmitter 
 Реализует паттерн «Наблюдатель» и позволяет подписываться на события и уведомлять подписчиков о наступлении события. 
 Имеет методы on, off , emit  — для подписки на событие, отписки от события и уведомления подписчиков о наступлении события соответственно. 
 
-#### Слой данных
+##### Класс View
+Класс отвечает за взаимодействие со страницей и наследуется от класса HTMLCustomItem.
+Имеет методы:
+-	render
+-	factory
+-	create
+-	assign
+-	element
+-	select
+-	copy
+-	setVisibleContent
+-	bem
+-	toggle
+-	on
+
+#### Слой данных (Model)
 ##### Класс AppData
 Класс AppData наследуется от Model, который принимает интерфейс IAppState и предоставляет функции для работы с данными.
+Использует следующие методы:
+-	addProductToBasket(product: Product): void; — добавляет продукт в корзину
+-	deleteProductFromBasket(id: string): void; — удаляет продукт из корзины
+-	clearBasket(): void; — очищает корзину
+-	getBasketCount(): number; —считает количество товаров в корзине
+-	getTotalPrice(): number; —считает итоговую цену
+-	setOrderField(field: string, value: string): void; — получает поля корзины
+-	validateContacts(): boolean; — валидация контактов
+-	validateOrder(): boolean; — валидация заказа
+-	isClearBasket(): boolean; — проверка на пустоту корзины
+-	setProduct(items: IProduct[]): void; —изменение продуктов в корзине
+-	resetSelected(): void; — удаление избранности товара
 
-#### Слой представления
-Все классы представления отвечают за отображение внутри контейнера передаваемых в них данных. Главным родительским классом всех далее указанных классов является базовый компонент Component<T>, где <T> представляет используемый элементом интерфейс или тип. Все дочерние классы принимают в конструкторе container в качестве HTML-элемента и events для управления событиями.
-
-##### Класс Modal
-Класс на основе интерфейса IModal, который представляет собой универсальный инструмент реализации модального окна, в котором меняется основной контент через шаблоны (карточка, корзина, формы). Инициализирует элементы корзины, такие как кнопка закрытия и контент. Устанавливает обработчики событий для уже найденной кнопки закрытия, клика за пределами окна и предотвращение закрытия при клике внутри контента.
+Имеет атрибуты:
+-	basket: Product[]; - корзина
+-	products: Product[]; - все товары (список)
+-	order: IOrder; - заказ
+-	formErrors: FormErrors; - ошибки формы
 
 ##### Класс Basket
+Класс Basket наследуется от класса View. Использует следующие методы:
 -	Метод добавления товара в корзину.
 -	Метод удаления товара из корзины.
 -	Метод очистки корзины.
 -	Геттер получения товаров.
 -	Геттер получения общей суммы корзины. 
 
+Имеет атрибуты:
+-	products: HTMLElement[]; — товары
+-	price: number; — цена
+
 ##### Класс Card
+Класс Card наследуется от класса View и на основе интерфейса ICard. Использует следующие методы:
 -	Сеттер изменения картинки
 -	Сеттер изменения текстов – название, описание, цена
 
+Имеет атрибуты:
+-	id: string; — уникальный id товара
+-	title: string; — заголовок товара
+-	category: string; — категория товара
+-	description: string; — описание товара
+-	image: string; — фото товара
+-	price: number | null; — цена товара
+-	selected: boolean; — является ли товар добавленным в корзину
+
 ##### Класс Order 
+Класс Order наследуется от класса View и на основе интерфейса IOrder.
 Отвечает за работу с заказами и оплатой.
+Имеет атрибуты:
+  -	productsID: string[]; — список id товаров
+  -	payment: string;  — способ оплаты
+  -	total: number; — цена заказа
+  -	address: string; — адрес доставки
+  -	email: string; — почта покупателя
+  -	phone: string; —телефон покупателя
 
 ##### Класс Product
+Класс Product наследуется от класса View и на основе интерфейса IProduct.
 Отвечает за работу и отрисовку товара.
+Имеет атрибуты:
+-	id: string; — уникальный id товара
+-	description: string; — описание товара
+-	image: string; — фото товара
+-	title: string; — заголовок товара
+-	category: CategoryType; — категория товара
+-	price: number | null; — цена товара
+-	selected: boolean; — добавлен ли текущий товар уже в корзину
+
+#### Слой представления
+Все классы представления отвечают за отображение внутри контейнера передаваемых в них данных. Главным родительским классом всех далее указанных классов является базовый компонент Component<T>, где <T> представляет используемый элементом интерфейс или тип. Все дочерние классы принимают в конструкторе container в качестве HTML-элемента и events для управления событиями.
+
+##### Класс Modal
+Класс на основе интерфейса IModal, который представляет собой универсальный инструмент реализации модального окна, в котором меняется основной контент через шаблоны (карточка, корзина, формы). Инициализирует элементы корзины, такие как кнопка закрытия и контент. Устанавливает обработчики событий для уже найденной кнопки закрытия, клика за пределами окна и предотвращение закрытия при клике внутри контента.
 
 #####  Слой презентера
 "Веб-ларек" - это небольшое приложение, и его пользовательский интерфейс будет фактически находиться в коде, который находится в файле src\index.ts в корне проекта. Здесь все компоненты и API соединяются через коллбэки или событийную систему. 
