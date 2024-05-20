@@ -1,4 +1,4 @@
-import { EventsMap } from './events';
+import { EventsMap, EventName } from './events';
 import {
 	bem,
 	ensureElement,
@@ -73,6 +73,7 @@ export class View<
 		name?: string
 	): T {
 		const template = document.getElementById(templateId) as HTMLTemplateElement;
+		// console.log(template, templateId)
 		const element = template.content.firstElementChild.cloneNode(true);
 		return this.factory(element, data, name) as T;
 	}
@@ -102,9 +103,12 @@ export class View<
 	// View elements api
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	assign(data?: Record<string, any> & DataType) {
+		// console.log(data);
+		
 		if (data)
 			Object.keys(data).map((key) => {
 				if (this.fieldNames.includes(key)) {
+					// console.log(this)
 					this[key as string] = data[key];
 				}
 			});
@@ -117,6 +121,8 @@ export class View<
 	): T {
 		if (!this.elements[name]) {
 			const el = this.bem(name);
+			// console.log(name, el);
+			
 			this.select<T>(name, el.class, ClassType);
 		}
 		return this.elements[name] as T;
@@ -171,7 +177,7 @@ export class View<
 		return this;
 	}
 
-	on(eventName: Events, handler: EventHandler) {
-		return super.on(eventName, handler) as typeof this;
+	on<T extends object>(eventName: EventName, callback: (event: T) => void) {
+		return super.on(eventName, callback) as typeof this;
 	}
 }

@@ -1,11 +1,14 @@
 // Хорошая практика даже простые типы выносить в алиасы
 // Зато когда захотите поменять это достаточно сделать в одном месте
-type EventName = string | RegExp;
+export type EventName = string | RegExp;
 type Subscriber = Function;
 type EmitterEvent = {
     eventName: string,
     data: unknown
 };
+export type EventData = object;
+export type EventHandler = (args: EventData) => void;
+export type EventsMap = Map<string, Set<EventHandler>>;
 
 export interface IEvents {
     on<T extends object>(event: EventName, callback: (data: T) => void): void;
@@ -34,6 +37,7 @@ export class EventEmitter implements IEvents {
         }
         this._events.get(eventName)?.add(callback);
     }
+  
 
     /**
      * Снять обработчик с события
@@ -83,5 +87,8 @@ export class EventEmitter implements IEvents {
             });
         };
     }
+    bindEmitter(events: EventsMap) {
+		this._events = events;
+	}
 }
 

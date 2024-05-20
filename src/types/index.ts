@@ -3,24 +3,24 @@ import { ViewElement } from './../components/base/view';
 type CategoryType = string;
 
 // TODO: возможно потребуется дописать тип
-type Product = string[];
+export type Product = string[];
 
 // TODO: дописать тип 
-type FormErrors = any;
+export type FormErrors = any;
  
  
-interface IProduct {
+export interface IProduct {
     id: string;
     description: string;
     image: string;
     title: string;
     category: CategoryType;
-    price: number | null;
+    price: number | null | string;
     selected: boolean;
 }
 
 
-interface IAppState {
+export interface IAppState {
     basket: Product[];
     products: Product[];
     order: IOrder;
@@ -40,18 +40,19 @@ interface IAppState {
 
 
 
-interface IOrder {
+export interface IOrder {
     productsID: string[];
     payment: string;
     total: number;
     address: string;
     email: string;
     phone: string;
+  
 }
 
 
 
-interface ICard {
+export interface ICard {
     id: string;
     title: string;
     category: string;
@@ -63,36 +64,47 @@ interface ICard {
 
 
 
-interface IPage {
+export interface IPage {
     counterProductInBasket: number;
     products: HTMLElement[];
 }
 
 
 
-interface IBasket {
-    products: HTMLElement[];
+export interface IBasket {
+    list: HTMLElement[];
     price: number;
 }
 
 
 
-interface IOrderModal {
+export interface IOrderModal {
     address: string;
     payment: string;
 }
 
 
 
-interface IContacts {
+export interface IContacts {
     phone: string;
     email: string;
 }
 
 
-interface IModal {
+export interface IModal {
     header?: ViewElement;
     content: ViewElement;
     actions: ViewElement[];
 }
 
+export interface ApiResponse {
+    items: IProduct[];
+  }
+
+
+  export interface IOrderForm {
+    payment: string;
+    address: string;
+    email: string;
+    phone: string;
+  }
