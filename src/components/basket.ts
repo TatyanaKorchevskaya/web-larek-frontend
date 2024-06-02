@@ -1,7 +1,9 @@
 import { IBasket, IProduct } from '../types/index';
 import { IEvents } from "./base/events";
 import { handlePrice } from '../utils/utils';
-
+import { View } from './base/view';
+import { Page } from './page';
+import { Card, ICard } from "./card";
 
 export class Basket implements IBasket {
 
@@ -14,7 +16,7 @@ export class Basket implements IBasket {
     constructor(
         protected blockName: string,
         container: HTMLElement,
-        protected events: IEvents
+        protected events?: IEvents
     ) {
 
         this._button = container.querySelector(`.${blockName}__button`);
@@ -51,19 +53,42 @@ export class Basket implements IBasket {
             ).toString())
         );
     }
+    render(data?: IProduct[]): HTMLElement {
+              data.forEach(element => {
+                console.log(this._list);
+                
+                const li = document.createElement('li')
+                this._list.appendChild(li)
+                this._list.querySelector('.card__title').textContent = element.title
+              });
+        // this._list.querySelector('.card__title').textContent = data.title
+        // this._cardElement.querySelector('.card__image').setAttribute('src', `${CDN_URL}${data.image}`)    
+        // this._cardElement.querySelector('.card__text').textContent = data.description
+        // this._cardElement.querySelector('.card__price').textContent = data.price !== null ? `${data.price.toString()} синапсов` : 'Бесценно'
+        
+        // let categoryItem: HTMLElement = this._cardElement.querySelector('.card__category')
+		// categoryItem.textContent = data.category;
+		// if (data.category in categoryMapping) {
+        //     categoryItem.classList.remove('card__category_other')
+		// 	categoryItem.classList.add(categoryMapping[data.category])
+		// }
+        return this._list
+    }
 }
 
 export interface IProductBasket extends IProduct {
     id: string;
     index: number;
-  }
+}
 
 
 export interface IStoreItemBasketActions {
     onClick: (event: MouseEvent) => void;
 }
 
-export class StoreItemBasket implements IProductBasket {
+
+export class StoreItemBasket {
+    protected _container: HTMLElement;
     protected _index: HTMLElement;
     protected _title: HTMLElement;
     protected _price: HTMLElement;
@@ -74,22 +99,24 @@ export class StoreItemBasket implements IProductBasket {
         container: HTMLElement,
         actions?: IStoreItemBasketActions
     ) {
-       
+        this._container = container
+        console.log(`.${blockName}__title`, "+++++++++++++++++", this._container);
         this._title = container.querySelector(`.${blockName}__title`);
         this._index = container.querySelector(`.basket__item-index`);
         this._price = container.querySelector(`.${blockName}__price`);
         this._button = container.querySelector(`.${blockName}__button`);
-        // this.container = container
 
         if (this._button) {
             this._button.addEventListener('click', (evt) => {
-                container.remove();
+                this._container.remove();
                 actions?.onClick(evt);
             });
         }
     }
 
     set title(value: string) {
+       
+        
         this._title.textContent = value;
     }
 
@@ -100,4 +127,9 @@ export class StoreItemBasket implements IProductBasket {
     set price(value: number) {
         this._price.textContent = handlePrice(value) + ' синапсов';
     }
+
+    render(data?: Partial<IProductBasket>): HTMLElement {
+        Object.assign(this as object, data ?? {});
+        return this._container;
+      }
 }

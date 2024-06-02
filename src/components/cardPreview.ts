@@ -13,11 +13,18 @@ import { IEvents } from './base/events'
 
 export class CardPreview {
     protected _cardElement: HTMLElement;
+    protected _product: ICard;
     constructor(template: HTMLTemplateElement,  protected events: IEvents, name?: string) {
+       
         this._cardElement = template.content.querySelector('.card').cloneNode(true) as HTMLElement;
-        this._cardElement.querySelector('.card__button').addEventListener('click', () => { this.events.emit('card:addBasket') });
+     
+        this._cardElement.querySelector('.card__button')
+        .addEventListener('click', () => { this.events.emit('card:addBasket', this._product) });
     }
     render(data?: ICard): HTMLElement {
+        this._product = data
+       
+        
         this._cardElement.querySelector('.card__title').textContent = data.title
         this._cardElement.querySelector('.card__image').setAttribute('src', `${CDN_URL}${data.image}`)    
         this._cardElement.querySelector('.card__text').textContent = data.description

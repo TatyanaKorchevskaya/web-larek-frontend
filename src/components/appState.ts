@@ -36,8 +36,8 @@ export class AppState extends Model<IAppState> {
   formErrors: FormErrors = {};
 
   addToBasket(value: Product) {
-    console.log('addbasket');
-    
+       console.log('AppState addbasket');
+       
     this.basket.push(value);
   }
 

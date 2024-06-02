@@ -35,6 +35,7 @@ export class HTMLCustomItem<
 	}
 
 	bindEvent(sourceEvent: DOMEvents, targetEvent?: Events, data?: object) {
+			
 		this.node.addEventListener(sourceEvent, (event: Event) => {
 			this.emit((targetEvent ?? sourceEvent) as Events, {
 				event,
