@@ -7,6 +7,7 @@ import {
 } from '../../utils/utils';
 import { HTMLCustomItem, ContentValue, DOMEvents } from './html';
 import { EventHandler } from './events';
+import { AppState, Product } from '../appState';
 
 export type ViewElement<T extends HTMLElement = HTMLElement> = View<
 	T,
@@ -47,7 +48,7 @@ export class View<
 
 	// Core methods
 	// eslint-disable-next-line @typescript-eslint/no-empty-function
-	protected init() {}
+	protected init() { }
 
 	render(data?: DataType): NodeType {
 		this.assign(data);
@@ -69,11 +70,12 @@ export class View<
 
 	static clone<T extends ViewElement>(
 		templateId: string,
+		appData?: AppState,
 		data?: object,
 		name?: string
 	): T {
+		if (appData !== undefined) appData.setStore(data as Product);
 		const template = document.getElementById(templateId) as HTMLTemplateElement;
-		// console.log(template, templateId)
 		const element = template.content.firstElementChild.cloneNode(true);
 		return this.factory(element, data, name) as T;
 	}
@@ -104,11 +106,10 @@ export class View<
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	assign(data?: Record<string, any> & DataType) {
 		// console.log(data);
-		
+
 		if (data)
 			Object.keys(data).map((key) => {
 				if (this.fieldNames.includes(key)) {
-					// console.log(this)
 					this[key as string] = data[key];
 				}
 			});
@@ -121,8 +122,8 @@ export class View<
 	): T {
 		if (!this.elements[name]) {
 			const el = this.bem(name);
-			// console.log(name, el);
-			
+	console.log(el);
+	
 			this.select<T>(name, el.class, ClassType);
 		}
 		return this.elements[name] as T;
@@ -134,8 +135,13 @@ export class View<
 		ClassType?: new (el: HTMLElement, name: string) => T
 	): T {
 		if (!this.elements[name]) {
+			console.log("888888888888888888");
+			
 			const $el = ensureElement<HTMLElement>(selector, this.node);
+			console.log("jjj");
 			const el = this.bem(name);
+			console.log(el, $el);
+			
 			if (ClassType) {
 				this.elements[name] = new ClassType($el, name);
 			} else {

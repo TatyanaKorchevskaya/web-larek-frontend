@@ -14,7 +14,7 @@ export const page = Page.mount<Page>('.page').configure(settings, events);
 // modal.on('open', () => page.lockScroll(true));
 // modal.on('hide', () => page.lockScroll(false));
 
-export const basket = new Basket('basket', document.querySelector('.basket'))
+export const basket = new Basket('basket', document.querySelector('#basket') as HTMLTemplateElement, events)
 
 // function onChangeTickets() {
 // 	page.counter = basket.tickets.size;

@@ -41,7 +41,7 @@ export interface IAppState {
 
 
 export interface IOrder {
-    productsID: string[];
+    items: string[];
     payment: string;
     total: number;
     address: string;

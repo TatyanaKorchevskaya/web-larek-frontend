@@ -7,6 +7,7 @@ import { EventHandler, IEvents } from './base/events';
 import { CardPreview } from './cardPreview';
 import { Modal } from './common/modal';
 import { EventEmitter } from './base/events';
+import { AppState } from './appState';
 // import { IProduct } from './../types/index'
 //TODO: избавитьс от локального event 
 const eventsT = new EventEmitter();
@@ -36,7 +37,7 @@ export class Page extends View<
 	// protected _tickets: ITicket[] = [];
 
 	protected init() {
-		
+
 
 		// this.select('openBasket', '.header__basket').bindEvent(
 		// 	'click',
@@ -44,7 +45,7 @@ export class Page extends View<
 		// );
 		// console.log('end');
 		ensureElement<HTMLElement>('.header__basket').addEventListener('click', () => {
-			this._eventsEmit.emit('basket:open',{})
+			this._eventsEmit.emit('basket:open', {})
 		})
 
 		// this.select('hero', '.hero', Hero).on('action', this.trigger('buy-ticket'));
@@ -61,13 +62,12 @@ export class Page extends View<
 	}
 
 	lockScroll(state: boolean) {
-			this.element('wrapper').toggle('locked', state);
+		this.element('wrapper').toggle('locked', state);
 	}
 
 	protected selectProduct =
 		(product: ICard, events: IEvents): EventHandler =>
 			() => {
-				console.log('select');
 				const cardPreviewTemplate = document.querySelector('#card-preview') as HTMLTemplateElement;
 				let ProductView = new CardPreview(cardPreviewTemplate, events)
 				modal.content = ProductView.render(product)
@@ -78,11 +78,10 @@ export class Page extends View<
 
 
 
-	setProducts(products: ICard[], template: string, events: IEvents) {
-		console.log('-gggggggggggggggggg', products);
-
+	setProducts(products: ICard[], template: string, events: IEvents, appData?: AppState) {
+	
 		const items = products.map((product) =>
-			Card.clone<Card>(template, product).on('click', this.selectProduct(product, events))
+			Card.clone<Card>(template, appData, product).on('click', this.selectProduct(product, events))
 		);
 
 		this.element<Gallery>('gallery').render({ items });

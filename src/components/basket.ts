@@ -8,6 +8,7 @@ import { Card, ICard } from "./card";
 export class Basket implements IBasket {
 
     // Ссылки на внутренние элементы
+    protected _container: HTMLElement;
     protected _list: HTMLElement;
     protected _price: HTMLElement;
     protected _button: HTMLButtonElement;
@@ -15,13 +16,14 @@ export class Basket implements IBasket {
     // Конструктор принимает имя блока, родительский элемент и обработчик событий
     constructor(
         protected blockName: string,
-        container: HTMLElement,
+        container: HTMLTemplateElement,
         protected events?: IEvents
     ) {
+        this._container = container.content.firstElementChild.cloneNode(true) as HTMLElement;
 
-        this._button = container.querySelector(`.${blockName}__button`);
-        this._price = container.querySelector(`.${blockName}__price`);
-        this._list = container.querySelector(`.${blockName}__list`);
+        this._button = this._container.querySelector(`.${blockName}__button`);
+        this._price = this._container.querySelector(`.${blockName}__price`);
+        this._list = this._container.querySelector(`.${blockName}__list`);
 
         if (this._button) {
             this._button.addEventListener('click', () => this.events.emit('basket:order'))
@@ -53,27 +55,36 @@ export class Basket implements IBasket {
             ).toString())
         );
     }
-    render(data?: IProduct[]): HTMLElement {
-              data.forEach(element => {
-                console.log(this._list);
-                
-                const li = document.createElement('li')
-                this._list.appendChild(li)
-                this._list.querySelector('.card__title').textContent = element.title
-              });
-        // this._list.querySelector('.card__title').textContent = data.title
-        // this._cardElement.querySelector('.card__image').setAttribute('src', `${CDN_URL}${data.image}`)    
-        // this._cardElement.querySelector('.card__text').textContent = data.description
-        // this._cardElement.querySelector('.card__price').textContent = data.price !== null ? `${data.price.toString()} синапсов` : 'Бесценно'
-        
-        // let categoryItem: HTMLElement = this._cardElement.querySelector('.card__category')
-		// categoryItem.textContent = data.category;
-		// if (data.category in categoryMapping) {
-        //     categoryItem.classList.remove('card__category_other')
-		// 	categoryItem.classList.add(categoryMapping[data.category])
-		// }
-        return this._list
+    // render(data?: IProduct[]): HTMLElement {
+    //   data.forEach(element => {
+    //     console.log(this._list);
+
+    //     const li = document.createElement('li')
+    //     this._list.appendChild(li)
+    //     this._list.querySelector('.card__title').textContent = element.title
+    //   });
+
+
+
+    // this._list.querySelector('.card__title').textContent = data.title
+    // this._cardElement.querySelector('.card__image').setAttribute('src', `${CDN_URL}${data.image}`)    
+    // this._cardElement.querySelector('.card__text').textContent = data.description
+    // this._cardElement.querySelector('.card__price').textContent = data.price !== null ? `${data.price.toString()} синапсов` : 'Бесценно'
+
+    // let categoryItem: HTMLElement = this._cardElement.querySelector('.card__category')
+    // categoryItem.textContent = data.category;
+    // if (data.category in categoryMapping) {
+    //     categoryItem.classList.remove('card__category_other')
+    // 	categoryItem.classList.add(categoryMapping[data.category])
+    // }
+    // return this._list
+    //     }
+    render(data?: Partial<IBasket>): HTMLElement {
+
+        Object.assign(this as object, data ?? {});
+        return this._container;
     }
+
 }
 
 export interface IProductBasket extends IProduct {
@@ -84,6 +95,7 @@ export interface IProductBasket extends IProduct {
 
 export interface IStoreItemBasketActions {
     onClick: (event: MouseEvent) => void;
+
 }
 
 
@@ -100,7 +112,6 @@ export class StoreItemBasket {
         actions?: IStoreItemBasketActions
     ) {
         this._container = container
-        console.log(`.${blockName}__title`, "+++++++++++++++++", this._container);
         this._title = container.querySelector(`.${blockName}__title`);
         this._index = container.querySelector(`.basket__item-index`);
         this._price = container.querySelector(`.${blockName}__price`);
@@ -115,8 +126,8 @@ export class StoreItemBasket {
     }
 
     set title(value: string) {
-       
-        
+
+
         this._title.textContent = value;
     }
 
@@ -129,7 +140,8 @@ export class StoreItemBasket {
     }
 
     render(data?: Partial<IProductBasket>): HTMLElement {
+
         Object.assign(this as object, data ?? {});
         return this._container;
-      }
+    }
 }

@@ -20,11 +20,11 @@ export class AppState extends Model<IAppState> {
   basket: Product[] = [];
 
   // Массив со всеми товарами
-  store: Product[];
+  store: Product[] = [];
 
   // Объект заказа клиента
   order: IOrder = {
-    productsID: [],
+    items: [],
     payment: '',
     total: null,
     address: '',
@@ -36,8 +36,7 @@ export class AppState extends Model<IAppState> {
   formErrors: FormErrors = {};
 
   addToBasket(value: Product) {
-       console.log('AppState addbasket');
-       
+
     this.basket.push(value);
   }
 
@@ -54,7 +53,7 @@ export class AppState extends Model<IAppState> {
   }
 
   setItems() {
-    this.order.productsID = this.basket.map(item => item.id)
+    this.order.items = this.basket.map(item => item.id)
   }
 
   setOrderField(field: keyof IOrderForm, value: string) {
@@ -96,7 +95,7 @@ export class AppState extends Model<IAppState> {
 
   refreshOrder() {
     this.order = {
-       productsID: [],
+      items: [],
       total: null,
       address: '',
       email: '',
@@ -109,12 +108,24 @@ export class AppState extends Model<IAppState> {
     return this.basket.reduce((sum, next) => sum + next.price, 0);
   }
 
-  setStore(items: IProduct[]) {
-    this.store = items.map((item) => new Product({ ...item, selected: false }, this.events));
+  // setStore(items: IProduct[]) {
+  //   this.store = items.map((item) => new Product({ ...item, selected: false }, this.events));
+  //   this.emitChanges('items:changed', { store: this.store });
+  // }
+
+  setStore(item: Product) {
+    const product: Product = new Product({ ...item, selected: false }, this.events)
+    this.store.push(product);
     this.emitChanges('items:changed', { store: this.store });
   }
 
+  // setStore(item: Product) {
+  //   this.store.push(item)
+  //   this.emitChanges('items:changed', { store: this.store });
+  // }
+
   resetSelected() {
+
     this.store.forEach(item => item.selected = false)
   }
 }

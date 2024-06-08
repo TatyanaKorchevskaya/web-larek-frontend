@@ -22,6 +22,7 @@ export class CardPreview {
         .addEventListener('click', () => { this.events.emit('card:addBasket', this._product) });
     }
     render(data?: ICard): HTMLElement {
+       
         this._product = data
        
         
@@ -36,6 +37,8 @@ export class CardPreview {
             categoryItem.classList.remove('card__category_other')
 			categoryItem.classList.add(categoryMapping[data.category])
 		}
+        if (data.price == null) (this._cardElement.querySelector('.card__button') as HTMLButtonElement).disabled = true
+               
         return this._cardElement
     }
 }

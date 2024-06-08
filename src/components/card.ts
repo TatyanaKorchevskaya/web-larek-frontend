@@ -11,8 +11,17 @@ export interface ICard {
 	price: number | null | string;
 	selected: boolean;
 }
+export class Card extends View<HTMLElement, ICard, 'click', never> {
+// export class Card extends View<HTMLElement, ICard, 'click', never> {
+	// export class Card<NodeType extends HTMLButtonElement> extends View<HTMLButtonElement, ICard, 'click', never> {
+	// protected _button: HTMLButtonElement;
 
-export class Card extends View<HTMLButtonElement, ICard, 'click', never> {
+	// constructor(root: NodeType, name?: string) {
+	// 	super(root, name)
+	// 	this._button = root.querySelector('.card__button');
+	// }
+
+	
 	protected init() {
 		this.bindEvent('click');
 		
@@ -36,11 +45,19 @@ export class Card extends View<HTMLButtonElement, ICard, 'click', never> {
 	set price(value: number | null) {
 		if (value == null) {
 			this.element('price').setText('Бесценно');
+			// this.element('button').disabled = true;
+			// console.log(this.name);
 
+			
 		} else {
 			this.element('price').setText(`${value.toString()} синапсов`);
 		}
 	}
+	// set selected(value: boolean) {
+	// 	if (!this.element('button').disabled) {
+	// 	  this.element('button').disabled = value;
+	// 	}
+	//   }
 }
 
 // interface ICardActions {
