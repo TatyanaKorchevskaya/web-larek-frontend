@@ -14,12 +14,22 @@ import { IEvents } from './base/events'
 export class CardPreview {
     protected _cardElement: HTMLElement;
     protected _product: ICard;
-    constructor(template: HTMLTemplateElement,  protected events: IEvents, name?: string) {
+    protected _card: Card;
+    constructor(template: HTMLTemplateElement,  protected events: IEvents, card?: Card, name?: string) {
        
         this._cardElement = template.content.querySelector('.card').cloneNode(true) as HTMLElement;
      
         this._cardElement.querySelector('.card__button')
         .addEventListener('click', () => { this.events.emit('card:addBasket', this._product) });
+
+        this._card = card
+        console.log(this._card.selected);
+        
+        // if (this._card.selected) {
+        //     console.log(this._card, "productpreview render");
+            
+        //     (this._cardElement.querySelector('.card__button') as HTMLButtonElement).disabled = true
+        // }
     }
     render(data?: ICard): HTMLElement {
        
@@ -37,8 +47,23 @@ export class CardPreview {
             categoryItem.classList.remove('card__category_other')
 			categoryItem.classList.add(categoryMapping[data.category])
 		}
-        if (data.price == null) (this._cardElement.querySelector('.card__button') as HTMLButtonElement).disabled = true
+        if (data.price == null) {
+            console.log(this._card, "productpreview render");
+            
+            (this._cardElement.querySelector('.card__button') as HTMLButtonElement).disabled = true
+        }
+        if (this._card.selected) {
+            (this._cardElement.querySelector('.card__button') as HTMLButtonElement).disabled = true
+        }
                
         return this._cardElement
     }
+
+    // set selected(value: boolean) {
+    //     console.log("set selected----------------");
+        
+	// 	if (!(this._cardElement.querySelector('.card__button') as HTMLButtonElement).disabled) {
+    //         (this._cardElement.querySelector('.card__button') as HTMLButtonElement).disabled = value;
+	// 	}
+	//   }
 }

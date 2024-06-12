@@ -137,17 +137,30 @@ export class Modal implements IModal {
 		this.events.emit('modal:close');
 	}
 
-	set locked(value: boolean) {
+	// set locked(value: boolean) {
+	// 	console.log(value, '8888888888999999999999--------------');
+		
+	// 	if (value) {
+	// 		this._pageWrapper.classList.add('page__wrapper_locked');
+	// 	} else {
+	// 		this._pageWrapper.classList.remove('page__wrapper_locked');
+	// 	}
+	// }
+
+	static locked(value: boolean) {
+		console.log(value, '8888888888999999999999--------------');
+		
 		if (value) {
-			this._pageWrapper.classList.add('page__wrapper_locked');
+			document.querySelector('.page__wrapper').classList.add('page__wrapper_locked');
 		} else {
-			this._pageWrapper.classList.remove('page__wrapper_locked');
+			document.querySelector('.page__wrapper').classList.remove('page__wrapper_locked');
 		}
 	}
 
 	render(): HTMLElement {
 		this._content;
 		this.open();
+
 		return this.modalContainer
 	}
 }

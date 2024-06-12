@@ -34,14 +34,12 @@ api
     .getProducts()
     .then((Products) => {
         page.setProducts(Products, settings.cardTemplate, events, appData);
-        
+
     })
     .catch((err: string) => console.log(`Error: `, err));
 
 
 events.on('card:addBasket', (item: Product) => {
- 
-
     item.selected = true;
     appData.addToBasket(item);
     page.counter = appData.getBasketAmount();
@@ -49,7 +47,7 @@ events.on('card:addBasket', (item: Product) => {
 })
 
 events.on('basket:open', () => {
-    page.locked = true
+    
     const basketItems = appData.basket.map((item, index) => {
         const template = document.querySelector('#card-basket') as HTMLTemplateElement;
         const templateElement = template.content.firstElementChild.cloneNode(true) as HTMLTemplateElement;
@@ -66,18 +64,19 @@ events.on('basket:open', () => {
             index: index + 1,
         });
     });
-   
+
     modal.content = basket.render({
         list: basketItems,
         price: appData.getTotalBasketPrice(),
     })
     modal.render()
+    Modal.locked(true)
 
 });
 
 events.on('basket:delete', (item: Product) => {
     appData.deleteFromBasket(item.id);
-    item.selected = false;
+    appData.desabledProduct(item);
     basket.price = appData.getTotalBasketPrice();
     page.counter = appData.getBasketAmount();
     basket.refreshIndices();
@@ -87,7 +86,7 @@ events.on('basket:delete', (item: Product) => {
 })
 
 events.on('basket:order', () => {
-  
+
     modal.content = order.render(
         {
             address: '',
@@ -121,8 +120,8 @@ events.on('orderInput:change', (data: { field: keyof IOrderForm, value: string }
 events.on('order:submit', () => {
     appData.order.total = appData.getTotalBasketPrice()
     appData.setItems();
-  
-    
+
+
     modal.content = contacts.render(
         {
             valid: false,
@@ -133,21 +132,21 @@ events.on('order:submit', () => {
 })
 // Покупка товаров
 events.on('contacts:submit', () => {
-   
-    
+
+
     api.post('/order', appData.order)
-      .then((res) => {
-        events.emit('order:success', res);
-        appData.clearBasket();
-        appData.refreshOrder();
-        order.disableButtons();
-        page.counter = 0;
-        appData.resetSelected();
-      })
-      .catch((err) => {
-        console.log(err)
-      })
-  })
+        .then((res) => {
+            events.emit('order:success', res);
+            appData.clearBasket();
+            appData.refreshOrder();
+            order.disableButtons();
+            page.counter = 0;
+            appData.resetSelected();
+        })
+        .catch((err) => {
+            console.log(err)
+        })
+})
 
 // Окно успешной покупки
 events.on('order:success', (res: ApiListResponse<string>) => {
@@ -164,6 +163,6 @@ events.on('order:success', (res: ApiListResponse<string>) => {
 
 // Закрытие модального окна
 events.on('modal:close', () => {
-    page.locked = false;
+    Modal.locked(false);
     appData.refreshOrder();
 });

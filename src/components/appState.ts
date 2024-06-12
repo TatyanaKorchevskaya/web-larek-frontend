@@ -1,6 +1,8 @@
 import { IOrder, IProduct, FormErrors, IOrderForm } from '../types/index';
 import { Model } from './base/model';
 import { IAppState } from '../types';
+import { CardPreview } from './cardPreview';
+import { Card, ICard } from './card';
 
 export class Product extends Model<IProduct> {
   id: string;
@@ -20,7 +22,7 @@ export class AppState extends Model<IAppState> {
   basket: Product[] = [];
 
   // Массив со всеми товарами
-  store: Product[] = [];
+  store: Card[] = [];
 
   // Объект заказа клиента
   order: IOrder = {
@@ -36,7 +38,14 @@ export class AppState extends Model<IAppState> {
   formErrors: FormErrors = {};
 
   addToBasket(value: Product) {
-
+    this.store.forEach(item => {
+      console.log(value, item);
+      
+      if (item.id === value.id) {
+        
+        item.selected = true;
+      }
+    })
     this.basket.push(value);
   }
 
@@ -108,24 +117,45 @@ export class AppState extends Model<IAppState> {
     return this.basket.reduce((sum, next) => sum + next.price, 0);
   }
 
+  desabledProduct(product: Product) {
+    this.store.forEach(item => {
+      if (item.id === product.id) {
+        item.selected = false;
+      }
+    })
+  }
+
+
   // setStore(items: IProduct[]) {
   //   this.store = items.map((item) => new Product({ ...item, selected: false }, this.events));
   //   this.emitChanges('items:changed', { store: this.store });
   // }
 
-  setStore(item: Product) {
-    const product: Product = new Product({ ...item, selected: false }, this.events)
-    this.store.push(product);
+  // setStore(item: CardPreview) {
+  //   // const product: Product = new Product({ ...item, selected: false }, this.events)
+  //   this.store.push(item);
+  //   this.emitChanges('items:changed', { store: this.store });
+  //   console.log(this.store, "store--------------------------------");
+    
+  // }
+
+  setStore(item: Card) {
+    this.store.push(item)
     this.emitChanges('items:changed', { store: this.store });
   }
 
-  // setStore(item: Product) {
-  //   this.store.push(item)
-  //   this.emitChanges('items:changed', { store: this.store });
+  // addSelected(product: Product) {
+  //   this.store.forEach(item => {
+  //     if (product.id == item.id) {
+  //       item.selected = true;
+  //     }
+  //   })
   // }
 
   resetSelected() {
-
+    
+    
     this.store.forEach(item => item.selected = false)
+    console.log(this.store, "resetSelected");
   }
 }

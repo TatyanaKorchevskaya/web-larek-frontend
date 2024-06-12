@@ -5,7 +5,7 @@ import { Basket } from '../basket';
 
 import { settings } from '../../utils/constants';
 
-// TODO: сделать импорт events, modal
+
 export const events = new EventEmitter();
 
 export const page = Page.mount<Page>('.page').configure(settings, events);

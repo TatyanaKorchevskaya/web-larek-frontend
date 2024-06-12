@@ -9,10 +9,10 @@ import { Modal } from './common/modal';
 import { EventEmitter } from './base/events';
 import { AppState } from './appState';
 // import { IProduct } from './../types/index'
-//TODO: избавитьс от локального event 
-const eventsT = new EventEmitter();
 
-const modal = new Modal(ensureElement<HTMLDivElement>('#modal-container'), eventsT);
+const eventsPage = new EventEmitter();
+
+const modal = new Modal(ensureElement<HTMLDivElement>('#modal-container'), eventsPage);
 
 interface IPage {
 	counter: number;
@@ -66,26 +66,33 @@ export class Page extends View<
 	}
 
 	protected selectProduct =
-		(product: ICard, events: IEvents): EventHandler =>
+		(product: ICard, events: IEvents, appData?: AppState, card?: Card): EventHandler =>
 			() => {
 				const cardPreviewTemplate = document.querySelector('#card-preview') as HTMLTemplateElement;
-				let ProductView = new CardPreview(cardPreviewTemplate, events)
+				let ProductView = new CardPreview(cardPreviewTemplate, events, card)
 				modal.content = ProductView.render(product)
 				modal.render()
-
-
 			};
 
 
 
 	setProducts(products: ICard[], template: string, events: IEvents, appData?: AppState) {
-	
-		const items = products.map((product) =>
-			Card.clone<Card>(template, appData, product).on('click', this.selectProduct(product, events))
-		);
+		const items: Card[] = [];
+		products.forEach(product => {
+			const newCard: Card = Card.clone<Card>(template, appData, product)
+			newCard.selected = false
+			newCard.id = product.id
+			newCard.on('click', this.selectProduct(product, events, appData, newCard))
+			appData.setStore(newCard)
+			items.push(newCard)
+		})
+		console.log(items, "<<<<<<<<<<<<<<<<<<<<<<item");
 
+		items.forEach((item) => {
+
+			appData.setStore(item)
+		})
 		this.element<Gallery>('gallery').render({ items });
-		// this.selectProduct(products[0])({ element: items[0] });
 		this.element<Gallery>('gallery').setActiveItem({ element: items[0] });
 	}
 

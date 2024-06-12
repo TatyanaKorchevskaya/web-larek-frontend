@@ -2,11 +2,9 @@ import { ViewElement } from './../components/base/view';
 
 type CategoryType = string;
 
-// TODO: возможно потребуется дописать тип
 export type Product = string[];
 
-// TODO: дописать тип 
-export type FormErrors = any;
+export type FormErrors = Partial<Record<keyof IOrderForm, string>>;
  
  
 export interface IProduct {

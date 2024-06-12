@@ -74,7 +74,7 @@ export class View<
 		data?: object,
 		name?: string
 	): T {
-		if (appData !== undefined) appData.setStore(data as Product);
+		// if (appData !== undefined) appData.setStore(data as Product);
 		const template = document.getElementById(templateId) as HTMLTemplateElement;
 		const element = template.content.firstElementChild.cloneNode(true);
 		return this.factory(element, data, name) as T;

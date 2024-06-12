@@ -136,7 +136,7 @@ export function createElement<
     }
     return element;
 }
-// TODO: требуется исправить, т.к. взято из др проекта
+
 export function handlePrice(price: number): string {
     const priceStr = price.toString();
     return priceStr.length < 5

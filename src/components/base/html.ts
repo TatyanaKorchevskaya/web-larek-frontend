@@ -50,7 +50,7 @@ export class HTMLCustomItem<
 		super.emit(eventName, data);
 		return this;
 	}
-// TODO: требуется исправить код
+
 	on<T extends object>(eventName: EventName, callback: (event: T) => void) {
 		super.on(eventName as string, callback);
 		return this;
