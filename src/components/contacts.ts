@@ -1,22 +1,13 @@
 import { IEvents } from './base/events';
 import { Form } from './common/form';
 
-/*
-  * Интерфейс, описывающий окошко контакты
-  * */
-export interface IContacts {
-  // Телефон
-  phone: string;
 
-  // Электронная почта
+export interface IContacts {
+  phone: string;
   email: string;
 }
 
-/*
-  * Класс, описывающий окошко контакты
-  * */
 export class Contacts extends Form<IContacts> {
-  // Конструктор принимает родительский элемент и обработчик событий
   constructor(
     container: HTMLFormElement,
     events: IEvents

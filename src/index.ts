@@ -98,21 +98,19 @@ events.on('basket:order', () => {
 });
 
 
-// Изменилось состояние валидации заказа
 events.on('orderFormErrors:change', (errors: Partial<IOrderForm>) => {
     const { payment, address } = errors;
     order.valid = !payment && !address;
     order.errors = Object.values({ payment, address }).filter(i => !!i).join('; ');
 });
 
-// Изменилось состояние валидации контактов
 events.on('contactsFormErrors:change', (errors: Partial<IOrderForm>) => {
     const { email, phone } = errors;
     contacts.valid = !email && !phone;
     contacts.errors = Object.values({ phone, email }).filter(i => !!i).join('; ');
 });
 
-// Изменились введенные данные
+
 events.on('orderInput:change', (data: { field: keyof IOrderForm, value: string }) => {
     appData.setOrderField(data.field, data.value);
 });
@@ -130,7 +128,6 @@ events.on('order:submit', () => {
     )
     modal.render()
 })
-// Покупка товаров
 events.on('contacts:submit', () => {
 
 
@@ -148,20 +145,13 @@ events.on('contacts:submit', () => {
         })
 })
 
-// Окно успешной покупки
 events.on('order:success', (res: ApiListResponse<string>) => {
     modal.content = success.render({
         description: res.total
     })
     modal.render()
-    // modal.render({
-    //     content: success.render({
-    //         description: res.total
-    //     })
-    // })
-})
+   })
 
-// Закрытие модального окна
 events.on('modal:close', () => {
     Modal.locked(false);
     appData.refreshOrder();

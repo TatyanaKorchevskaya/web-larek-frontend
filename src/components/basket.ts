@@ -7,13 +7,13 @@ import { Card, ICard } from "./card";
 
 export class Basket implements IBasket {
 
-    // Ссылки на внутренние элементы
+    
     protected _container: HTMLElement;
     protected _list: HTMLElement;
     protected _price: HTMLElement;
     protected _button: HTMLButtonElement;
 
-    // Конструктор принимает имя блока, родительский элемент и обработчик событий
+   
     constructor(
         protected blockName: string,
         container: HTMLTemplateElement,
@@ -30,24 +30,21 @@ export class Basket implements IBasket {
         }
 
     }
-    // Сеттер для общей цены
+  
     set price(price: number) {
         this._price.textContent = handlePrice(price) + ' синапсов';
     }
-
-    // Сеттер для списка товаров 
+   
     set list(items: HTMLElement[]) {
         this._list.replaceChildren(...items);
         this._button.disabled = items.length ? false : true;
     }
 
-    // Метод отключающий кнопку "Оформить"
     disableButton() {
         this._button.disabled = true
     }
 
-    // Метод для обновления индексов таблички при удалении товара из корзины
-    refreshIndices() {
+        refreshIndices() {
         Array.from(this._list.children).forEach(
             (item, index) =>
             (item.querySelector(`.basket__item-index`)!.textContent = (
@@ -55,30 +52,7 @@ export class Basket implements IBasket {
             ).toString())
         );
     }
-    // render(data?: IProduct[]): HTMLElement {
-    //   data.forEach(element => {
-    //     console.log(this._list);
 
-    //     const li = document.createElement('li')
-    //     this._list.appendChild(li)
-    //     this._list.querySelector('.card__title').textContent = element.title
-    //   });
-
-
-
-    // this._list.querySelector('.card__title').textContent = data.title
-    // this._cardElement.querySelector('.card__image').setAttribute('src', `${CDN_URL}${data.image}`)    
-    // this._cardElement.querySelector('.card__text').textContent = data.description
-    // this._cardElement.querySelector('.card__price').textContent = data.price !== null ? `${data.price.toString()} синапсов` : 'Бесценно'
-
-    // let categoryItem: HTMLElement = this._cardElement.querySelector('.card__category')
-    // categoryItem.textContent = data.category;
-    // if (data.category in categoryMapping) {
-    //     categoryItem.classList.remove('card__category_other')
-    // 	categoryItem.classList.add(categoryMapping[data.category])
-    // }
-    // return this._list
-    //     }
     render(data?: Partial<IBasket>): HTMLElement {
 
         Object.assign(this as object, data ?? {});

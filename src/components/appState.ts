@@ -14,17 +14,15 @@ export class Product extends Model<IProduct> {
   selected: boolean;
 }
 
-/*
-  * Класс, описывающий состояние приложения
-  * */
+
 export class AppState extends Model<IAppState> {
-  // Корзина с товарами
+
   basket: Product[] = [];
 
-  // Массив со всеми товарами
+
   store: Card[] = [];
 
-  // Объект заказа клиента
+
   order: IOrder = {
     items: [],
     payment: '',
@@ -34,15 +32,13 @@ export class AppState extends Model<IAppState> {
     phone: '',
   };
 
-  // Объект с ошибками форм
+
   formErrors: FormErrors = {};
 
   addToBasket(value: Product) {
     this.store.forEach(item => {
-      console.log(value, item);
-      
+
       if (item.id === value.id) {
-        
         item.selected = true;
       }
     })
@@ -126,36 +122,14 @@ export class AppState extends Model<IAppState> {
   }
 
 
-  // setStore(items: IProduct[]) {
-  //   this.store = items.map((item) => new Product({ ...item, selected: false }, this.events));
-  //   this.emitChanges('items:changed', { store: this.store });
-  // }
-
-  // setStore(item: CardPreview) {
-  //   // const product: Product = new Product({ ...item, selected: false }, this.events)
-  //   this.store.push(item);
-  //   this.emitChanges('items:changed', { store: this.store });
-  //   console.log(this.store, "store--------------------------------");
-    
-  // }
 
   setStore(item: Card) {
     this.store.push(item)
     this.emitChanges('items:changed', { store: this.store });
   }
 
-  // addSelected(product: Product) {
-  //   this.store.forEach(item => {
-  //     if (product.id == item.id) {
-  //       item.selected = true;
-  //     }
-  //   })
-  // }
 
   resetSelected() {
-    
-    
     this.store.forEach(item => item.selected = false)
-    console.log(this.store, "resetSelected");
   }
 }

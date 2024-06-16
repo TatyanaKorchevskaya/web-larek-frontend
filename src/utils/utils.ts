@@ -30,9 +30,7 @@ export type SelectorElement<T> = T | string;
 export function ensureElement<T extends HTMLElement>(selectorElement: SelectorElement<T>, context?: HTMLElement): T {
     if (isSelector(selectorElement)) {
         const elements = ensureAllElements<T>(selectorElement, context);
-        console.log(selectorElement, elements);
-        console.log(context);
-        
+                
         if (elements.length > 1) {
             console.warn(`selector ${selectorElement} return more then one element`);
         }
@@ -136,7 +134,6 @@ export function createElement<
     }
     return element;
 }
-
 export function handlePrice(price: number): string {
     const priceStr = price.toString();
     return priceStr.length < 5

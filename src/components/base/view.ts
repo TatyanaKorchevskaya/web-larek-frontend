@@ -46,16 +46,12 @@ export class View<
 		this.init();
 	}
 
-	// Core methods
-	// eslint-disable-next-line @typescript-eslint/no-empty-function
 	protected init() { }
 
 	render(data?: DataType): NodeType {
 		this.assign(data);
 		return this.node;
 	}
-
-	// Factory methods
 
 	public static factory<T extends ViewElement>(
 		this: new (el: unknown, name?: string) => T,
@@ -74,7 +70,6 @@ export class View<
 		data?: object,
 		name?: string
 	): T {
-		// if (appData !== undefined) appData.setStore(data as Product);
 		const template = document.getElementById(templateId) as HTMLTemplateElement;
 		const element = template.content.firstElementChild.cloneNode(true);
 		return this.factory(element, data, name) as T;
@@ -102,10 +97,7 @@ export class View<
 		return new this(element);
 	}
 
-	// View elements api
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	assign(data?: Record<string, any> & DataType) {
-		// console.log(data);
 
 		if (data)
 			Object.keys(data).map((key) => {
@@ -122,8 +114,6 @@ export class View<
 	): T {
 		if (!this.elements[name]) {
 			const el = this.bem(name);
-	console.log(el);
-	
 			this.select<T>(name, el.class, ClassType);
 		}
 		return this.elements[name] as T;
@@ -135,13 +125,9 @@ export class View<
 		ClassType?: new (el: HTMLElement, name: string) => T
 	): T {
 		if (!this.elements[name]) {
-			console.log("888888888888888888");
-			
 			const $el = ensureElement<HTMLElement>(selector, this.node);
-			console.log("jjj");
 			const el = this.bem(name);
-			console.log(el, $el);
-			
+
 			if (ClassType) {
 				this.elements[name] = new ClassType($el, name);
 			} else {
@@ -162,7 +148,6 @@ export class View<
 		);
 	}
 
-	// HTML helper api
 
 	setVisibleContent(element: string, content?: ContentValue) {
 		if (content) {
