@@ -14,4 +14,23 @@ export class Contacts extends Form<IContacts> {
   ) {
     super(container, events);
   }
+
+  public get phone(): string {
+    return this.phone
+  }
+
+
+  public set phone(newPhone: string) {
+    this.phone = newPhone;
+  }
+
+  public get email(): string {
+    return this.email
+  }
+
+
+  public set email(newEmail: string) {
+    this.phone = newEmail;
+  }
+
 }

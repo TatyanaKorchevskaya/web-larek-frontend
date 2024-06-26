@@ -100,8 +100,6 @@ export class StoreItemBasket {
     }
 
     set title(value: string) {
-
-
         this._title.textContent = value;
     }
 

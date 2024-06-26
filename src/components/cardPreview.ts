@@ -5,11 +5,13 @@ import { IEvents } from './base/events'
 
 export class CardPreview {
     protected _cardElement: HTMLElement;
+    protected _cardElementButton: HTMLButtonElement;
     protected _product: ICard;
     protected _card: Card;
     constructor(template: HTMLTemplateElement, protected events: IEvents, card?: Card, name?: string) {
 
         this._cardElement = template.content.querySelector('.card').cloneNode(true) as HTMLElement;
+        this._cardElementButton = (this._cardElement.querySelector('.card__button') as HTMLButtonElement)
 
         this._cardElement.querySelector('.card__button')
             .addEventListener('click', () => { this.events.emit('card:addBasket', this._product) });
@@ -35,10 +37,10 @@ export class CardPreview {
         if (data.price == null) {
             console.log(this._card, "productpreview render");
 
-            (this._cardElement.querySelector('.card__button') as HTMLButtonElement).disabled = true
+            this._cardElementButton.disabled = true
         }
         if (this._card.selected) {
-            (this._cardElement.querySelector('.card__button') as HTMLButtonElement).disabled = true
+            this._cardElementButton.disabled = true
         }
 
         return this._cardElement

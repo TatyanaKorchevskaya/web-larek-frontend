@@ -60,6 +60,7 @@ export class Page extends View<
 				let ProductView = new CardPreview(cardPreviewTemplate, events, card)
 				modal.content = ProductView.render(product)
 				modal.render()
+				modal.locked(true)
 			};
 
 	setProducts(products: ICard[], template: string, events: IEvents, appData?: AppState) {
@@ -72,7 +73,7 @@ export class Page extends View<
 			appData.setStore(newCard)
 			items.push(newCard)
 		})
-		
+
 		items.forEach((item) => {
 			appData.setStore(item)
 		})

@@ -70,7 +70,7 @@ events.on('basket:open', () => {
         price: appData.getTotalBasketPrice(),
     })
     modal.render()
-    Modal.locked(true)
+    modal.locked(true)
 
 });
 
@@ -115,6 +115,10 @@ events.on('orderInput:change', (data: { field: keyof IOrderForm, value: string }
     appData.setOrderField(data.field, data.value);
 });
 
+events.on('contactsInput:change', (data: { field: keyof IOrderForm, value: string }) => {
+    appData.setOrderField(data.field, data.value);
+});
+
 events.on('order:submit', () => {
     appData.order.total = appData.getTotalBasketPrice()
     appData.setItems();
@@ -128,6 +132,7 @@ events.on('order:submit', () => {
     )
     modal.render()
 })
+
 events.on('contacts:submit', () => {
 
 
@@ -153,6 +158,6 @@ events.on('order:success', (res: ApiListResponse<string>) => {
    })
 
 events.on('modal:close', () => {
-    Modal.locked(false);
+    modal.locked(false);
     appData.refreshOrder();
 });

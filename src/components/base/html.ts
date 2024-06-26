@@ -7,6 +7,10 @@ export type ContentValue = CommonElement | Node | string;
 export type CustomEvent = {
 	event: Event;
 };
+interface IFormState {
+    valid: boolean;
+    errors: string[];
+}
 
 export class HTMLCustomItem<
 	NodeType extends HTMLElement,
@@ -19,7 +23,7 @@ export class HTMLCustomItem<
 		this.node = root;
 	}
 
-	render() {
+	render(state?: any) {
 		return this.node;
 	}
 

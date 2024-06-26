@@ -70,18 +70,14 @@ export function getObjectProperties(obj: object, filter?: (name: string, prop: P
         .map(([name, prop]) => name);
 }
 
-/**
- * Устанавливает dataset атрибуты элемента
- */
+
 export function setElementData<T extends Record<string, unknown> | object>(el: HTMLElement, data: T) {
     for (const key in data) {
         el.dataset[key] = String(data[key]);
     }
 }
 
-/**
- * Получает типизированные данные из dataset атрибутов элемента
- */
+
 export function getElementData<T extends Record<string, unknown>>(el: HTMLElement, scheme: Record<string, Function>): T {
     const data: Partial<T> = {};
     for (const key in el.dataset) {

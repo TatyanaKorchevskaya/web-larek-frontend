@@ -1,17 +1,19 @@
 
 import { IEvents } from '../base/events';
 import { ensureElement } from '../../utils/utils';
+import { HTMLCustomItem } from '../base/html';
 
 interface IFormState {
     valid: boolean;
     errors: string[];
 }
 
-export class Form<T> {
+export class Form<T> extends HTMLCustomItem<HTMLElement, 'click'>{
     protected _submit: HTMLButtonElement;
     protected _errors: HTMLElement;
 
     constructor(protected container: HTMLFormElement, protected events: IEvents) {
+        super(container)
         this.container = container.content.firstElementChild.cloneNode(true) as HTMLFormElement;
 
         this._submit = ensureElement<HTMLButtonElement>(
@@ -34,7 +36,9 @@ export class Form<T> {
     }
 
     protected onInputChange(field: keyof T, value: string) {
-        this.events.emit('orderInput:change', {
+        console.log(this.container.name);
+        
+        this.events.emit(`${this.container.name}Input:change`, {
             field,
             value,
         })
@@ -43,18 +47,18 @@ export class Form<T> {
     set valid(value: boolean) {
         this._submit.disabled = !value;
     }
-    setText(element: HTMLElement, value: string): void {
-        element.textContent = String(value);
-    }
-
+  
     set errors(value: string) {
-        this.setText(this._errors, value);
+        this.setText(value);
+    
     }
 
-
-    render(state: Partial<T> & IFormState) {
+    render(state: Partial<T> & IFormState): HTMLElement {
+        super.render();
         const { valid, errors, ...inputs } = state;
         Object.assign(this, inputs);
-        return this.container;
+        return this.container as HTMLElement;
     }
 }
+
+
