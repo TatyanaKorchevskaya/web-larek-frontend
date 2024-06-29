@@ -1,5 +1,6 @@
 import { IEvents } from "../base/events";
 import { HTMLCustomItem } from "../base/html";
+import { View } from "../base/view";
 
 
 export interface IModal {
@@ -10,13 +11,13 @@ export interface IModal {
 
 }
 
-export class Modal extends HTMLCustomItem<HTMLElement, 'click'> implements IModal {
+export class Modal extends View<HTMLElement, IModal , 'click', never> {
 	protected modalContainer: HTMLElement;
 	protected closeButton: HTMLButtonElement;
 	protected _content: HTMLElement;
 	protected _pageWrapper: HTMLElement;
 
-	constructor(modalContainer: HTMLElement, protected events: IEvents) {
+	constructor(modalContainer: HTMLElement, protected event: IEvents) {
 		super(modalContainer)
 		this.node = modalContainer;
 		this.closeButton = modalContainer.querySelector('.modal__close');
@@ -48,7 +49,7 @@ export class Modal extends HTMLCustomItem<HTMLElement, 'click'> implements IModa
 	// создаем метод для переключения модального окна, чтобы не передавать селектор и контейнер каждый раз
 	// сразу по умолчанию указываем `true`, чтобы лишний раз не передавать при открытии
 	_toggleModal(state: boolean = true) {
-		this.toggleClass('modal_active', state);
+		this.toggleClass(this.node, 'modal_active', state);
 	}
 	// Обработчик в виде стрелочного метода, чтобы не терять контекст `this`
 	_handleEscape = (evt: KeyboardEvent) => {
@@ -61,25 +62,20 @@ export class Modal extends HTMLCustomItem<HTMLElement, 'click'> implements IModa
 		this._toggleModal(); // открываем
 		// навешиваем обработчик при открытии
 		document.addEventListener('keydown', this._handleEscape);
-		this.events.emit('modal:open');
+		this.event.emit('modal:open');
 	}
 
 	close() {
-		this._toggleModal(false); // закрываем
-		// правильно удаляем обработчик при закрытии
+		this._toggleModal(false); 
 		document.removeEventListener('keydown', this._handleEscape);
 		this.content = null;
-		this.events.emit('modal:close');
+		this.event.emit('modal:close');
 	}
 
 
 	locked(value: boolean) {
-		// this.toggleClass('page__wrapper_locked', value)
-		if (value) {
-			document.querySelector('.page__wrapper').classList.add('page__wrapper_locked');
-		} else {
-			document.querySelector('.page__wrapper').classList.remove('page__wrapper_locked');
-		}
+		this.toggleClass(document.querySelector('.page__wrapper'),'page__wrapper_locked', value)
+		
 	}
 
 	render(): HTMLElement {

@@ -1,11 +1,11 @@
 import { IBasket, IProduct } from '../types/index';
 import { IEvents } from "./base/events";
 import { handlePrice } from '../utils/utils';
-import { View } from './base/view';
+import { View, ViewElement } from './base/view';
 import { Page } from './page';
 import { Card, ICard } from "./card";
 
-export class Basket implements IBasket {
+export class Basket extends View<HTMLElement, IBasket, 'click', never> {
 
     
     protected _container: HTMLElement;
@@ -17,39 +17,43 @@ export class Basket implements IBasket {
     constructor(
         protected blockName: string,
         container: HTMLTemplateElement,
-        protected events?: IEvents
+        event?: IEvents
     ) {
+        super(container)
+              
         this._container = container.content.firstElementChild.cloneNode(true) as HTMLElement;
 
         this._button = this._container.querySelector(`.${blockName}__button`);
         this._price = this._container.querySelector(`.${blockName}__price`);
+        // this._price = ((this._container as unknown as ViewElement<HTMLElement>).element(`price`) as unknown as ViewElement<HTMLElement>);
         this._list = this._container.querySelector(`.${blockName}__list`);
+        this.event = event;
 
         if (this._button) {
-            this._button.addEventListener('click', () => this.events.emit('basket:order'))
+            this._button.addEventListener('click', () => (this.event as IEvents).emit('basket:order'))
         }
 
     }
   
     set price(price: number) {
-        this._price.textContent = handlePrice(price) + ' синапсов';
+              this.setText (this._price, handlePrice(price) + ' синапсов')
     }
    
     set list(items: HTMLElement[]) {
         this._list.replaceChildren(...items);
-        this._button.disabled = items.length ? false : true;
+
+        this.toggleDisabled(this._button, items.length ? false : true)
     }
 
     disableButton() {
-        this._button.disabled = true
+        
+        this.toggleDisabled(this._button, true)
     }
 
         refreshIndices() {
         Array.from(this._list.children).forEach(
             (item, index) =>
-            (item.querySelector(`.basket__item-index`)!.textContent = (
-                index + 1
-            ).toString())
+                    (this.setText(item.querySelector(`.basket__item-index`)!, (index + 1).toString()))
         );
     }
 
@@ -73,7 +77,8 @@ export interface IStoreItemBasketActions {
 }
 
 
-export class StoreItemBasket {
+export class StoreItemBasket extends View<HTMLElement, IBasket, 'click', never> {
+    
     protected _container: HTMLElement;
     protected _index: HTMLElement;
     protected _title: HTMLElement;
@@ -85,6 +90,7 @@ export class StoreItemBasket {
         container: HTMLElement,
         actions?: IStoreItemBasketActions
     ) {
+        super(container)
         this._container = container
         this._title = container.querySelector(`.${blockName}__title`);
         this._index = container.querySelector(`.basket__item-index`);
@@ -100,15 +106,18 @@ export class StoreItemBasket {
     }
 
     set title(value: string) {
-        this._title.textContent = value;
+        // this._title.textContent = value;
+        this.setText(this._title, value);
     }
 
     set index(value: number) {
-        this._index.textContent = value.toString();
+        // this._index.textContent = value.toString();
+        this.setText(this._index, value.toString());
     }
 
     set price(value: number) {
-        this._price.textContent = handlePrice(value) + ' синапсов';
+        // this._price.textContent = handlePrice(value) + ' синапсов';
+        this.setText(this._price, handlePrice(value) + ' синапсов');
     }
 
     render(data?: Partial<IProductBasket>): HTMLElement {

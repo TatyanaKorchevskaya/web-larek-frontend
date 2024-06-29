@@ -1,5 +1,5 @@
 import { Gallery, IGallery } from './common/gallery';
-import { View } from './base/view';
+import { View, ViewElement } from './base/view';
 import { Hero } from './common/hero';
 import { ensureElement } from './../utils/utils';
 import { Card, ICard } from './card';
@@ -42,7 +42,7 @@ export class Page extends View<
 	}
 
 	set counter(value: number) {
-		this.select('counter', '.header__basket-counter').setText(String(value));
+		this.setText((this.select('counter', '.header__basket-counter') as Page).node as unknown as HTMLElement, String(value))
 	}
 
 	get selectProducts() {

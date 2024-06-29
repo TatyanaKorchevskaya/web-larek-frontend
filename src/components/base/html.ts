@@ -8,15 +8,15 @@ export type CustomEvent = {
 	event: Event;
 };
 interface IFormState {
-    valid: boolean;
-    errors: string[];
+	valid: boolean;
+	errors: string[];
 }
 
 export class HTMLCustomItem<
 	NodeType extends HTMLElement,
 	Events extends string
 > extends EventEmitter {
-	protected node: NodeType;
+	public node: NodeType;
 
 	constructor(root: NodeType) {
 		super();
@@ -39,7 +39,7 @@ export class HTMLCustomItem<
 	}
 
 	bindEvent(sourceEvent: DOMEvents, targetEvent?: Events, data?: object) {
-			
+
 		this.node.addEventListener(sourceEvent, (event: Event) => {
 			this.emit((targetEvent ?? sourceEvent) as Events, {
 				event,
@@ -84,15 +84,15 @@ export class HTMLCustomItem<
 
 	// ## Value and attributes operations
 
-	setText(value: string) {
+	setText(element: HTMLElement, value: string): void {
+
 		if (!isEmpty(value)) {
-			if (this.node instanceof HTMLImageElement) {
-				this.node.alt = value;
+			if (element instanceof HTMLImageElement) {
+				element.alt = value;
 			} else {
-				this.node.textContent = value;
+				element.textContent = value;
 			}
 		}
-		return this;
 	}
 
 	setLink(value: string) {
@@ -155,8 +155,9 @@ export class HTMLCustomItem<
 		return this;
 	}
 
-	toggleDisabled(state: boolean) {
-		return state ? this.disable() : this.enable();
+	toggleDisabled(element: HTMLElement, state: boolean) {
+		(element as HTMLButtonElement).disabled = state
+		// return state ? element.disable() : element.enable();
 	}
 
 	// ## Validation
@@ -174,7 +175,7 @@ export class HTMLCustomItem<
 			return this.isValid()
 				? undefined
 				: this.node.dataset['validation-message'] ??
-						this.node.validationMessage;
+				this.node.validationMessage;
 		} else {
 			throw new Error('Element has not validity state');
 		}
@@ -182,24 +183,25 @@ export class HTMLCustomItem<
 
 	// ## CSS-class operations
 
-	toggleClass(className: string, state?: boolean) {
+	toggleClass(element: HTMLElement, className: string, state?: boolean) {
 		if (isEmpty(state)) {
-			this.node.classList.toggle(className);
+			element.classList.toggle(className);
 		} else if (state === true) {
-			this.addClass(className);
+			this.addClass(element, className);
 		} else {
-			this.removeClass(className);
+			this.removeClass(element, className);
 		}
 		return this;
 	}
 
-	addClass(className: string) {
-		this.node.classList.add(className);
+	addClass(element: HTMLElement, className: string) {
+
+		element.classList.add(className);
 		return this;
 	}
 
-	removeClass(className: string) {
-		this.node.classList.remove(className);
+	removeClass(element: HTMLElement, className: string) {
+		element.classList.remove(className);
 		return this;
 	}
 

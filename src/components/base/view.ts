@@ -28,7 +28,7 @@ export class View<
 	[key: string]: unknown;
 	['constructor']: new (root: NodeType, name?: string) => this;
 
-	protected node: NodeType;
+	public node: NodeType;
 	protected events: EventsMap;
 
 	readonly name: string;
@@ -164,7 +164,7 @@ export class View<
 
 	toggle(modifier: Modifiers, state?: boolean) {
 		const bemName = this.bem(undefined, modifier as string).name;
-		this.toggleClass(bemName, state);
+		this.toggleClass(this.node, bemName, state);
 		return this;
 	}
 

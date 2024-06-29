@@ -1,4 +1,5 @@
 import { handlePrice } from '../utils/utils';
+import { View } from './base/view';
 
 interface ISuccessActions {
   onClick: (event: MouseEvent) => void;
@@ -8,7 +9,7 @@ export interface ISuccess {
   description: number;
 }
 
-export class Success {
+export class Success extends View<HTMLElement, ISuccess, 'click', never> {
   protected _button: HTMLButtonElement;
   protected _description: HTMLElement;
     container: HTMLElement;
@@ -18,7 +19,7 @@ export class Success {
     container: HTMLTemplateElement,
     actions?: ISuccessActions
   ) {
-    
+    super(container)
     this.container = container.content.firstElementChild.cloneNode(true) as HTMLElement;
 
 
@@ -33,7 +34,8 @@ export class Success {
   }
 
   set description(value: number) {
-    this._description.textContent = 'Списано ' + handlePrice(value) + ' синапсов'
+    // this._description.textContent = 'Списано ' + handlePrice(value) + ' синапсов'
+    this.setText(this._description, 'Списано ' + handlePrice(value) + ' синапсов')
   }
   render(data?: Partial<ISuccess>): HTMLElement {
       

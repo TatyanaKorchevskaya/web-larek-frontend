@@ -18,8 +18,6 @@ export class Product extends Model<IProduct> {
 export class AppState extends Model<IAppState> {
 
   basket: Product[] = [];
-
-
   store: Card[] = [];
 
 
@@ -43,6 +41,7 @@ export class AppState extends Model<IAppState> {
       }
     })
     this.basket.push(value);
+       
   }
 
   deleteFromBasket(id: string) {

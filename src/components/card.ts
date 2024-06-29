@@ -23,23 +23,28 @@ export class Card extends View<HTMLElement, ICard, 'click', never> {
 	}
 
 	set title(value: string) {
-		this.element('title').setText(value);
+		this.setText(this.element('title') as unknown as HTMLElement, value)
+		// this.element('title').setText(value);
 	}
 	set category(value: string) {
 		let categoryItem: ViewElement = this.element('category')
-		categoryItem.setText(value);
+		// categoryItem.setText(value);
+		this.setText(categoryItem.node as unknown as HTMLElement, value)
 		if (value in categoryMapping) {
-			categoryItem.addClass(categoryMapping[value])
+			// categoryItem.addClass(categoryMapping[value])
+			this.addClass(categoryItem.node, categoryMapping[value])
 		}
 	}
 
 	set price(value: number | null) {
 		if (value == null) {
-			this.element('price').setText('Бесценно');
+			// this.element('price').setText('Бесценно');
+			this.setText(this.element('price') as unknown as HTMLElement, 'Бесценно')
 			
 			
 		} else {
-			this.element('price').setText(`${value.toString()} синапсов`);
+			this.setText(this.element('price') as unknown as HTMLElement, `${value.toString()} синапсов`)
+			// this.element('price').setText(`${value.toString()} синапсов`);
 		}
 	}
 }
